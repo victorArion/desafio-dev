@@ -4,7 +4,7 @@ const { callDataBase } = require('./utils/callDataBase')
 const controles = {
 
     evento: async function(body, idEvent, chunks){
-        let sqlQuery = `INSERT INTO file_uploader (
+        let sql = `INSERT INTO file_uploader (
                             fk_file_uploader_origin, 
                             st_body, 
                             fl_executed
@@ -15,8 +15,8 @@ const controles = {
                             0
                         )`
 
-        console.log(sqlQuery)
-        let inserted_event = await callDataBase(desafio, sqlQuery)
+        console.log(sql)
+        const inserted_event = await callDataBase(desafio, sql)
         console.log(inserted_event)
 
         return inserted_event

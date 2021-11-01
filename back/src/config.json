@@ -1,6 +1,6 @@
 {
-    "arquivo":{
-        "porta":"3002"
+    "bk":{
+        "door":"3001"
     },
     "dataBase":{
         "connectionLimit":"20",

@@ -1,0 +1,14 @@
+{
+    "arquivo":{
+        "door":"3002"
+    },
+    "dataBase":{
+        "connectionLimit":"20",
+        "host": "localhost",
+        "user": "root",
+        "password": "root",
+        "database": "desafio",
+        "timezone": "UTC",
+        "dateStrings": "DD/MM/YYYY H:mm:ss"
+    }
+}
