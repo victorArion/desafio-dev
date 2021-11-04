@@ -1,5 +1,5 @@
-const {desafio} = require('./conection')
-const { callDataBase } = require('./utils/callDataBase')
+const {desafio} = require('../conection')
+const { callDataBase } = require('../utils/callDataBase')
 
 const events = {
     process_file: async function (data) {
@@ -38,25 +38,36 @@ const events = {
                 const nomeLoja = item_line.slice(62,81)
 
 
+                //Faz a formatacao da data
+                const dt_data = data.slice(0,4) + '-' + data.slice(4,6) + '-' + data.slice(6,8) + ' ' + hora.slice(0,2) + ':' + hora.slice(2,4) + ':' + hora.slice(4,6)
+                
+                //Normalizacao do valor
+                const n_value = valor / 100.00;
+
+
                 const cnabType = await this.find_cnab_type({n_type:tipo})
 
                 //Caso a consulta de algum dos tipos der errado, sera validado posteriormente
                 if(cnabType.status !== 200 || cnabType.data.lenght === 0){
                     error.searchType = true
-                    cnabType.data = [{pk_mov_cnab_type:undefined}]
+                    error.insertMovCnabData.push({
+                        pk_file_uploader:item_file.pk_file_uploader,
+                        line_error_data:item_line
+                    })
+                    return null;
                 }
+                const pk_mov_cnab_type = cnabType.data[0].pk_mov_cnab_type;
 
-                //Faz a formatacao da data
-                const dt_data = data.slice(0,4) + '-' + data.slice(4,6) + '-' + data.slice(6,8) + ' ' + hora.slice(0,2) + ':' + hora.slice(2,4) + ':' + hora.slice(4,6)
+
 
                 const insert = await this.insert_mov_cnab({
-                    pk_mov_cnab_type:cnabType.data[0].pk_mov_cnab_type, 
-                    st_card:cartao,
-                    n_cpf:cpf, 
-                    n_value:valor, 
-                    st_sotre_name:nomeLoja.trim(), 
-                    st_store_owner:donoLoja.trim(),
-                    dt_data:dt_data
+                    pk_mov_cnab_type: pk_mov_cnab_type, 
+                    st_card: cartao,
+                    n_cpf: cpf, 
+                    n_value: n_value, 
+                    st_sotre_name: nomeLoja.trim(), 
+                    st_store_owner: donoLoja.trim(),
+                    dt_data: dt_data
                 })
 
                 if(insert.status !== 200){
@@ -79,14 +90,14 @@ const events = {
             //TODO validar se tiver mais de um evento de insercao
             
             //Organiza os dados 
-            const line_error_data = error.insertMovCnab.map((item_insert_mov,iiv)=>{{
+            const line_error_data = error.insertMovCnabData.map((item_insert_mov,iiv)=>{{
                 return item_insert_mov.line_error_data
             }})
 
             //Seta os arquivos que deram errado como nao lidos
             this.update_file_uploader({
                     fl_executed:false,
-                    file_uploader:error.insertMovCnab[0].pk_file_uploader,
+                    file_uploader:error.insertMovCnabData[0].pk_file_uploader,
                     line_error_data:line_error_data
             })
 
