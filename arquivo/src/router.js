@@ -26,7 +26,7 @@ router.post("/read_file", async (req, res, next) => {
     
     busboy.on('finish', async function() {
         chunks = Buffer.concat(chunks)
-        insertEvent = await evento.evento(chunks, body.cd_pav_evento_parametro_tipo)
+        insertEvent = await evento.evento(chunks, body.fk_file_uploader_origin)
         
         res.status(200).send({status: insertEvent.status, idInserido: insertEvent.insertId});
     });

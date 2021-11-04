@@ -5,10 +5,10 @@
     "dataBase":{
         "connectionLimit":"20",
         "host": "localhost",
-        "user": "root",
-        "password": "root",
+        "user": "victor",
+        "password": "qwertyasd",
         "database": "desafio",
-        "timezone": "UTC",
+        "timezone": "UTC-3",
         "dateStrings": "DD/MM/YYYY H:mm:ss"
     }
 }
