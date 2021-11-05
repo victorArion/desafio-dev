@@ -1,0 +1,36 @@
+.importa-arquivo-corpo{
+    width: 50%;
+    height: 30%;
+    background-color: #2c354b;
+    border-radius: 0.2em;
+}
+
+.btn-fechar-modal{
+    justify-content: flex-end;
+    display: flex;
+    font-size: 0.7em;
+    margin-right: 0.2em;
+    color: rgb(44, 2, 2);
+}
+
+.input-arquivo{
+    position: absolute;
+    z-index: -1;
+}
+
+.btn-inportar-arquivo{
+    background-color: transparent;
+    border: 0.12em solid #3f4b69;
+    border-radius: 20px;
+    width: 7em;
+    height: 2.3em;
+    font-size: 0.6em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-inportar-arquivo:hover{
+    background-color: #3f4b69;
+    border:none;
+    transition: 0.4s ease !important;
+}

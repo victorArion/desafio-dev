@@ -65,7 +65,7 @@ const events = {
                     st_card: cartao,
                     n_cpf: cpf, 
                     n_value: n_value, 
-                    st_sotre_name: nomeLoja.trim(), 
+                    st_store_name: nomeLoja.trim(), 
                     st_store_owner: donoLoja.trim(),
                     dt_data: dt_data
                 })
@@ -158,7 +158,7 @@ const events = {
                     st_card,
                     n_cpf, 
                     n_value, 
-                    st_sotre_name, 
+                    st_store_name, 
                     st_store_owner,
                     dt_data
                 )
@@ -167,13 +167,38 @@ const events = {
                     "${data.st_card}",
                     ${data.n_cpf},
                     ${data.n_value},
-                    "${data.st_sotre_name}",
+                    "${data.st_store_name}",
                     "${data.st_store_owner}",
                     "${data.dt_data}"
                 )`
 
         return await callDataBase(desafio, sql)
-    }
+    },
+
+    find_mov_cnab: async function (data) {
+
+        let sql  = ` SELECT 
+                        mc.pk_mov_cnab, 
+                        mct.st_mov_cnab_type,
+                        mct.st_category,
+                        mc.n_cpf, 
+                        mc.n_value, 
+                        mc.st_card, 
+                        mc.st_store_name, 
+                        mc.st_store_owner, 
+                        mc.dt_data 
+                    FROM mov_cnab mc
+                    LEFT JOIN mov_cnab_type mct ON mct.pk_mov_cnab_type = mc.fk_mov_cnab_type `
+
+        if(data.limit !== undefined &&  !isNaN(data.limit)){
+            sql += ` LIMIT ${data.limit} `
+        }
+        if(data.offset !== undefined && !isNaN(data.offset)){
+            sql += ` OFFSET ${data.offset}`
+        }  
+        
+        return await callDataBase(desafio, sql)
+    },
 
 }
 

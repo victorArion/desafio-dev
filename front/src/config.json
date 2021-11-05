@@ -1,0 +1,11 @@
+{
+    "front":{
+        "door":"3000"
+    },
+    "back":{
+        "door":"3001"
+    },
+    "upload_file":{
+        "door":"3002"
+    }
+}

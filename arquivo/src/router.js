@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Busboy = require('busboy');
-const evento = require("./evento.js")
+const evento = require("./controls/evento")
 
 router.post("/read_file", async (req, res, next) => {
     let chunks = [], file_name, file_type, file_encoding;
@@ -27,8 +27,7 @@ router.post("/read_file", async (req, res, next) => {
     busboy.on('finish', async function() {
         chunks = Buffer.concat(chunks)
         insertEvent = await evento.evento(chunks, body.fk_file_uploader_origin)
-        
-        res.status(200).send({status: insertEvent.status, idInserido: insertEvent.insertId});
+        res.status(insertEvent.status).send({status: insertEvent.status, data: insertEvent.data});
     });
     
     req.pipe(busboy);
