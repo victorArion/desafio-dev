@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import './css/App.css';
-import Movimentacao from './components/movimentacao/movimentacao';
+import Movimentacao from './components/movimentacao/tabela';
 import Importar from './components/movimentacao/importar';
 
 

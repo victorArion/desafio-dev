@@ -7,10 +7,14 @@
 
 .btn-fechar-modal{
     justify-content: flex-end;
+    display: flexbox;
     display: flex;
     font-size: 0.7em;
     margin-right: 0.2em;
     color: rgb(44, 2, 2);
+    background-color: transparent;
+    cursor: pointer;
+    border: 0px;
 }
 
 .input-arquivo{
@@ -33,4 +37,59 @@
     background-color: #3f4b69;
     border:none;
     transition: 0.4s ease !important;
+}
+
+.file-imported{
+    display: flex;
+}
+
+.file-imported-corpo{
+    justify-content: flex-start;
+    display: grid;
+    margin-left: 1em;
+    overflow-y: auto;
+    height: 60%;
+}
+.file-imported-span{
+    color: lightgray;
+    font-size: 0.8em;
+    text-overflow: ellipsis;
+}
+
+.file-imported_confirmar_cancelar{
+    margin-left: 10em;
+    margin-top: 5em;
+}
+
+.file-imported_confirmar, .file-imported_cancelar{
+    background-color: #3f4b69;
+    border: 1em;
+    border-radius: 20px;
+    width: 7em;
+    height: 2.3em;
+    font-size: 0.4em;
+    font-weight: bold;
+    color: lightgray;
+    cursor: pointer;
+    margin-left: 0.3em;
+}
+.file-imported_cancelar{
+    color: rgb(136, 26, 26);
+}
+
+.file-imported_confirmar:hover, .file-imported_cancelar:hover{
+    box-shadow: 0.2em 0.2em 0.2em rgb(39, 39, 39);
+}
+
+.btn-file-imported-apagar{
+    background-color: transparent;
+    border: 0em;
+    border-radius: 20px;
+    width: 4em;
+    height: 2.3em;
+    font-size: 0.4em;
+    font-weight: bold;
+    color: red;
+    cursor: pointer;
+    margin-left: 0.3em;
 }

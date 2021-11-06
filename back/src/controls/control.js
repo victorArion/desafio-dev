@@ -15,10 +15,10 @@ const events = {
 
         //Valida erro na consulta
         if(file.status !== 200){
-            return {status:501,info:"Internal search error"}
+            return {status:501,info:"Erro de consulta interno"}
         }
         if(file.data.lenght === 0 || file.data.lenght !== data.file_uploader.lenght){
-            return {status:404,info:"Event not found"}
+            return {status:404,info:"Evento não encontrado"}
         }
 
         //Varre os eventos que retornaram da consulta
@@ -59,7 +59,6 @@ const events = {
                 const pk_mov_cnab_type = cnabType.data[0].pk_mov_cnab_type;
 
 
-
                 const insert = await this.insert_mov_cnab({
                     pk_mov_cnab_type: pk_mov_cnab_type, 
                     st_card: cartao,
@@ -79,35 +78,39 @@ const events = {
                 }
             }))
 
+            //Valida se ocorreu erro em alguns dos passos da leitura de um arquivo e faz a limpeza do que ocorreu
+            const validateError = Object.values(error).filter(err => err === true);
+
+            if(validateError.length > 0){
+                //Organiza os dados que ainda precisao ser executados
+                const line_error_data = error.insertMovCnabData.map((item_insert_mov,iiv)=>{{
+                    return item_insert_mov.line_error_data
+                }})
+
+                //Seta os arquivos que deram errado como nao lidos
+                await this.update_file_uploader({
+                        fl_executed:false,
+                        file_uploader:item_file.pk_file_uploader,
+                        line_error_data:line_error_data
+                })
+                //Faz a limpeza dos dados de erro para nao ocorrer de executalos novamente
+                error.insertMovCnabData = []
+            }
+
         }))
 
-        //Atualiza os arquivos para ja executados
-        this.update_file_uploader({fl_executed:true,file_uploader:data.file_uploader})
-
-        //Valida se ocorreu erro em alguns dos passos e faz a limpeza do que ococr
+        //Valida se ocorreu erro em alguns dos passos e faz a limpeza do que ocorreu
         const validateError = Object.values(error).filter(err => err === true);
-        if(validateError.lenght > 0){
-            //TODO validar se tiver mais de um evento de insercao
-            
-            //Organiza os dados 
-            const line_error_data = error.insertMovCnabData.map((item_insert_mov,iiv)=>{{
-                return item_insert_mov.line_error_data
-            }})
-
-            //Seta os arquivos que deram errado como nao lidos
-            this.update_file_uploader({
-                    fl_executed:false,
-                    file_uploader:error.insertMovCnabData[0].pk_file_uploader,
-                    line_error_data:line_error_data
-            })
-
-
-            return {status:501,info:"Internal execute error"}
+        if(validateError.length > 0){
+            return {status:501,info:"Erro na execução internamente"}
         }
 
+        //Atualiza os arquivos para ja executados
+        this.delete_file({file_uploader:data.file_uploader})
+
+
        
-        
-        return {state:200,data:"Event occurred successful"}
+        return {status:200,data:"Evento processado com sucesso"}
 
     },
     find_file: async function (data) {
@@ -116,6 +119,18 @@ const events = {
 
         if(data.file_uploader){
             sql  = `SELECT * FROM file_uploader WHERE pk_file_uploader IN (${data.file_uploader})`
+        }
+
+
+        return await callDataBase(desafio, sql)
+    },
+    
+    delete_file: async function (data) {
+
+        let sql  = '';
+
+        if(data.file_uploader){
+            sql  = `UPDATE file_uploader SET fl_executed = 1 WHERE pk_file_uploader IN (${data.file_uploader})`
         }
 
 
@@ -139,13 +154,12 @@ const events = {
         let sql  = ' UPDATE file_uploader ';
 
         if(data.file_uploader && data.fl_executed === true){
-            sql  = ` SET fl_executed = 1 WHERE pk_file_uploader IN (${data.file_uploader})`
+            sql  += ` SET fl_executed = 1 WHERE pk_file_uploader IN (${data.file_uploader})`
         }
         if(data.file_uploader && data.fl_executed === false && data.line_error_data){
-            sql  = ` SET fl_executed = 0, st_body = "${data.line_error_data}" WHERE pk_file_uploader IN (${data.file_uploader})`
+            sql  += ` SET fl_executed = 0, st_body = "${data.line_error_data}" WHERE pk_file_uploader IN (${data.file_uploader})`
         }
-
-
+        console.log(sql)
         return await callDataBase(desafio, sql)
     },
 
@@ -188,7 +202,8 @@ const events = {
                         mc.st_store_owner, 
                         mc.dt_data 
                     FROM mov_cnab mc
-                    LEFT JOIN mov_cnab_type mct ON mct.pk_mov_cnab_type = mc.fk_mov_cnab_type `
+                    LEFT JOIN mov_cnab_type mct ON mct.pk_mov_cnab_type = mc.fk_mov_cnab_type 
+                    ORDER BY mc.pk_mov_cnab `
 
         if(data.limit !== undefined &&  !isNaN(data.limit)){
             sql += ` LIMIT ${data.limit} `
@@ -196,6 +211,15 @@ const events = {
         if(data.offset !== undefined && !isNaN(data.offset)){
             sql += ` OFFSET ${data.offset}`
         }  
+        
+        return await callDataBase(desafio, sql)
+    },
+
+    find_mov_cnab_total: async function (data) {
+
+        let sql  = ` SELECT 
+                        SUM(mc.n_value) as total_value
+                    FROM mov_cnab mc`
         
         return await callDataBase(desafio, sql)
     },

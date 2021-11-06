@@ -27,6 +27,10 @@ tbody tr:nth-child(even) {
     background-color: #333f58;
 }
 
+.btn-pagina{
+    width: 50%;
+}
+
 .btn-pagina-proximo, .btn-pagina-anterior{
     background-color: transparent;
     border: 0.12em solid #3f4b69;
@@ -55,4 +59,22 @@ tbody tr:nth-child(even) {
     color: rgb(187, 43, 43);
     align-items: flex-start;
     margin-right: 20.7em;
+}
+
+.msg-alerta-error{
+    font-size: 0.4em;
+    color: rgb(187, 43, 43);
+    justify-content: end;
+}
+
+.tabela-pe{
+    display: flex;
+}
+
+.valor-total{
+    font-size: 0.5em;
+    color: rgb(224, 222, 222);
+    /* margin-left: 20em; */
+    justify-items: flex-end;
+    width: 50%;
 }

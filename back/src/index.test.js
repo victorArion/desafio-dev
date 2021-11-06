@@ -5,7 +5,7 @@ test('Processamento de arquivo', async () => {
         file_uploader:1
     }
     const result = await processFile.process_file(body);
-    expect(result).toEqual({state:200,data:"Event occurred successful"});
+    expect(result).toEqual({status:200,data:"Evento processado com sucesso"});
 })
 
 test('Consultar movimento cnab', async () => {

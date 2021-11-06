@@ -17,7 +17,7 @@ router.post("/read_file", async (req, res, next) => {
     //Insere os dados do arquivo
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
         file_name = filename;
-        file_type = mimetype;
+        file_type = mimetype
         file_encoding = encoding;
         file.on('data', function(data) {
             chunks.push(data)
@@ -25,8 +25,14 @@ router.post("/read_file", async (req, res, next) => {
     });
     
     busboy.on('finish', async function() {
+        if(file_type !== "text/plain"){
+            res.status(401).send({status: 401, info: "Tipo de arquivo não permitido"})
+            req.pipe(busboy);
+            return undefined;
+        }
+
         chunks = Buffer.concat(chunks)
-        insertEvent = await evento.evento(chunks, body.fk_file_uploader_origin)
+        insertEvent = await evento.insert_event(chunks, body.fk_file_uploader_origin)
         res.status(insertEvent.status).send({status: insertEvent.status, data: insertEvent.data});
     });
     
